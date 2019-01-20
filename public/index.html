@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TSS-server</title>
+  </head>
+  <script src = "/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+    function sendData(){
+      socket.emit('sendData', document.getElementById('dt').value);
+    };
+  </script>
+  <body>
+    <h2>TSS Server</h2>
+    <input id="dt" type="text" name="dt" value=""><br>
+    <button type="button" name="button" onclick="sendData()">Send</button>
+  </body>
+</html>

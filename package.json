@@ -1,0 +1,34 @@
+{
+  "name": "ts-server",
+  "version": "1.0.0",
+  "description": "communication with app",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node .",
+    "dev": "yarn run lint && nodemon .",
+    "lint": "eslint --ext .js -f ./node_modules/eslint-friendly-formatter src",
+    "lint:fix": "eslint --ext .js -f ./node_modules/eslint-friendly-formatter --fix src",
+    "postinstall": "yarn run lint:fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oberak/ts-server.git"
+  },
+  "author": "hhl",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oberak/ts-server/issues"
+  },
+  "homepage": "https://github.com/oberak/ts-server#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-friendly-formatter": "^4.0.1",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-html": "^5.0.0"
+  }
+}
