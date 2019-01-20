@@ -1,9 +1,15 @@
 const app = require('express')()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
+const GPIOs = require('./GPIOs')
 
 app.get('/', (req, res) => {
   res.sendfile('../public/index.html') // Truckscale server
+})
+
+const gpio = new GPIOs((data) => {
+  console.log('receive from gpio', data)
+  io.emit('data', data)
 })
 
 io.on('connection', (socket) => {
@@ -12,13 +18,15 @@ io.on('connection', (socket) => {
     console.log('user disconnected')
   })
 
-  socket.on('sendData', (data) => {
-    console.log('Data :', data)
+  // receive from app and callback
+  socket.on('data', (data, fn) => {
+    console.log('server: received: ', data)
+    fn('sample data from server')
   })
 
-  socket.on('data', (msg) => {
-    console.log('message', msg)
-    socket.emit('data', { type: 'cmd-type', value: 1234 })
+  // receive from app (no callback)
+  socket.on('weight', (data) => {
+    gpio.dispWeight(data)
   })
 })
 
