@@ -1,9 +1,15 @@
 const app = require('express')()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
+const GPIOs = require('./GPIOs')
 
 app.get('/', (req, res) => {
   res.sendfile('../public/index.html') // Truckscale server
+})
+
+const gpio = new GPIOs((data) => {
+  console.log('receive from gpio', data)
+  io.emit('data', data)
 })
 
 io.on('connection', (socket) => {
@@ -35,13 +41,24 @@ io.on('connection', (socket) => {
 
   // send to ts-app
   setInterval(() => {
-    socket.emit('data', { type: 'rfid', value: Math.round(Math.random() * 1000) + 100000000 })
+    socket.emit('dataRfid', { type: 'rfid', value: Math.round(Math.random() * 1000) + 100000000 })
   }, 60000)
 
   // test: receive and callback
   socket.on('data-callback', (data, callback) => {
     console.log('Data :', data)
     callback('callback data from server')
+
+    // receive from app and callback
+    socket.on('data', (data, fn) => {
+      console.log('server: received: ', data)
+      fn('sample data from server')
+    })
+
+    // receive from app (no callback)
+    socket.on('weight', (data) => {
+      gpio.dispWeight(data)
+    })
   })
 })
 
