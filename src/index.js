@@ -12,13 +12,36 @@ io.on('connection', (socket) => {
     console.log('user disconnected')
   })
 
-  socket.on('sendData', (data) => {
+  // recevie weight from ts-app
+  socket.on('weight', (data) => {
     console.log('Data :', data)
   })
 
-  socket.on('data', (msg) => {
-    console.log('message', msg)
-    socket.emit('data', { type: 'cmd-type', value: 1234 })
+  // recevie control from ts-app
+  socket.on('control', (data) => {
+    switch (data.cmd) {
+      case 'led':
+        console.log('led control', data)
+        // call gpio led on/off
+        break
+      case 'barrier':
+        console.log('barrier control', data)
+        // call gpio led on/off
+        break
+      default:
+        console.error('not supported cmd', data.cmd)
+    }
+  })
+
+  // send to ts-app
+  setInterval(() => {
+    socket.emit('data', { type: 'rfid', value: Math.round(Math.random() * 1000) + 100000000 })
+  }, 60000)
+
+  // test: receive and callback
+  socket.on('data-callback', (data, callback) => {
+    console.log('Data :', data)
+    callback('callback data from server')
   })
 })
 
